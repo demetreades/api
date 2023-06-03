@@ -6,6 +6,7 @@ COPY package*.json ./
 
 RUN npm install -g nodemon
 RUN npm ci
+RUN npm cache clean --force
 
 COPY . .
 

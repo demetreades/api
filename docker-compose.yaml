@@ -36,17 +36,18 @@ services:
       - ./bin/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - MONGO_INITDB_ROOT_PASSWORD=root
       - MONGO_INITDB_DATABASE=databaseName
       - MONGO_USERNAME=admin
       - MONGO_PASSWORD=admin
 
   kibana:
-    container_name: kibana_container
     image: docker.elastic.co/kibana/kibana:8.2.3
+    container_name: kibana_container
+    network_mode: host
     restart: always
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200 # address of elasticsearch docker container which kibana will connect
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ulimits:
       memlock:
         soft: -1
@@ -61,6 +62,7 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.2.3
     container_name: elasticsearch_container
+    network_mode: host
     restart: always
     environment:
       - xpack.security.enabled=false
@@ -82,8 +84,9 @@ services:
       - 9200:9200
 
   redis:
-    container_name: redis_container
     image: redis:7.0.11-alpine
+    container_name: redis_container
+    network_mode: host
     restart: always
     # command: redis --save 20 1 --loglevel warning --requirepass password
     volumes:
