@@ -1,0 +1,81 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"main": "src/server.js",
+	"type": "module",
+	"scripts": {
+		"start": "node src/server.js",
+		"dev": "nodemon",
+		"test": "mocha './src/*/**.spec.js'",
+		"coverage": "nyc npm run test",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"prettier": "prettier --write .",
+		"lint-staged": "lint-staged",
+		"kill": "kill -9 $(lsof -t -i:5554)",
+		"prepare": "husky install"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"compression": "^1.7.4",
+		"cors": "^2.8.5",
+		"express": "^4.18.2",
+		"helmet": "^7.0.0",
+		"mongodb": "^5.6.0",
+		"pino": "^8.14.1"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^17.6.5",
+		"@commitlint/config-conventional": "^17.6.5",
+		"chai": "^4.3.7",
+		"dotenv": "^16.0.3",
+		"eslint": "^8.39.0",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-promise": "^6.1.1",
+		"eslint-plugin-security": "^1.7.1",
+		"husky": "^8.0.0",
+		"lint-staged": "^13.2.2",
+		"mocha": "^10.2.0",
+		"nyc": "^15.1.0",
+		"pino-pretty": "^10.0.0",
+		"sinon": "^15.1.0",
+		"docdash": "^2.0.1",
+		"eslint-plugin-jsdoc": "^46.1.0",
+		"jsdoc": "^4.0.2",
+		"jsdoc-to-markdown": "^8.0.0",
+		"prettier-eslint": "^15.0.1",
+		"prettier-plugin-jsdoc": "^0.4.2"
+	},
+	"lint-staged": {
+		"**/*.js": [
+			"npm run lint",
+			"npm run prettier"
+		],
+		"**/*.spec.js": [
+			"npm test"
+		]
+	},
+	"nyc": {
+		"include": [
+			"**/*.js"
+		],
+		"exclude": [
+			"**/*.spec.js",
+			"node_modules",
+			"coverage"
+		],
+		"reporter": [
+			"lcov",
+			"html",
+			"text-summary",
+			"text"
+		],
+		"all": true,
+		"check-coverage": true,
+		"lines": 85
+	}
+}

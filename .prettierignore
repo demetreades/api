@@ -1,0 +1,7 @@
+_OTHER
+docs
+node_modules
+.husky
+.vscode
+package.json
+package-lock.json
