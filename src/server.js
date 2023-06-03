@@ -12,6 +12,8 @@ const gracefulShutdown = (server) => (signal) => {
   server.close();
 };
 
+//
+
 const handleExit = gracefulShutdown(server);
 
 process.on('SIGTERM', () => handleExit('SIGTERM'));
