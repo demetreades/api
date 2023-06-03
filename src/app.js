@@ -14,7 +14,7 @@ app.use(cors());
 app.use(compression());
 
 app.use('/test', (req, res, next) => {
-  // console.log(req);
+  console.log('test route triggerd');
   res.status(200).json({
     message: 'test ok',
   });

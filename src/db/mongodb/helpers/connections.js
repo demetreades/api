@@ -12,7 +12,9 @@ const makeIdFromString = (id) => {
   return new mongodb.ObjectId(id);
 };
 
-const makeDb = async ({ url, dbName } = dbConfig) => {
+//
+
+export const connection = async (url, { dbName } = dbConfig) => {
   const { MongoClient } = mongodb;
 
   const client = new MongoClient(url, { userNewParser: true });
@@ -22,5 +24,3 @@ const makeDb = async ({ url, dbName } = dbConfig) => {
 
   return db;
 };
-
-export { makeDb };
