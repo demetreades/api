@@ -1,0 +1,98 @@
+version: '3.9'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    working_dir: /usr/src/app
+    network_mode: host
+    restart: always
+    ports:
+      - 5555:5555
+    volumes:
+      - node_modules:/usr/src/app/node_modules
+      - .:/usr/src/app
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
+    environment:
+      - DB_URI=database://localhost:27017/databaseName
+    depends_on:
+      - database
+      - elasticsearch
+      - kibana
+      - redis
+
+  database:
+    user: $UID
+    image: mongo:latest
+    container_name: mongodb_container
+    network_mode: host
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - database:/data/db
+      - ./bin/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - MONGO_INITDB_DATABASE=databaseName
+      - MONGO_USERNAME=admin
+      - MONGO_PASSWORD=admin
+
+  kibana:
+    container_name: kibana_container
+    image: docker.elastic.co/kibana/kibana:8.2.3
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200 # address of elasticsearch docker container which kibana will connect
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 5601:5601
+    volumes:
+      - kibana:/usr/share/kibana/data
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.3
+    container_name: elasticsearch_container
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      # - ELASTIC_USERNAME=admin
+      # - ELASTIC_PASSWORD=admin
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+
+  redis:
+    container_name: redis_container
+    image: redis:7.0.11-alpine
+    restart: always
+    # command: redis --save 20 1 --loglevel warning --requirepass password
+    volumes:
+      - redis:/data/redis
+
+volumes:
+  node_modules:
+  database:
+  kibana:
+  redis:
+  elasticsearch-data:
+    driver: local
